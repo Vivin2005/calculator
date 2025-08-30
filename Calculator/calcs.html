@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Calculator</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===============================================
+         * SETUP & BACKGROUND STYLES
+         * =============================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex; /* Use flexbox to center the calculator */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #fbc2eb, #a6c1ee); /* A soft, pleasant gradient background */
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        /* This creates the animated background effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #d4fc79, #96e6a1, #fbc2eb, #a6c1ee, #84fab0, #8fd3f4);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ===============================================
+         * CALCULATOR STYLES (GLASSMORPHISM)
+         * =============================================== */
+        .calculator {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            padding: 25px;
+            
+            /* This is the core of the glassmorphism effect */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px); /* The "blurry" effect */
+            -webkit-backdrop-filter: blur(20px);
+            
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            
+            /* Animation for the calculator appearing */
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===============================================
+         * DISPLAY SCREEN STYLES (IMPROVED)
+         * =============================================== */
+        .calculator-display {
+            width: 100%;
+            height: 90px;
+            background: rgba(0, 0, 0, 0.2); /* Darker, more distinct background */
+            color: #fff;
+            font-size: 2.8em; /* Slightly adjusted font size */
+            font-weight: 400; /* Bolder font for readability */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px; /* Rounded corners to match buttons */
+            
+            /* Flexbox for perfect vertical alignment of the text */
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            /* Handling long numbers gracefully */
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        /* ===============================================
+         * BUTTONS GRID & STYLES
+         * =============================================== */
+        .calculator-buttons {
+            display: grid; /* Use CSS Grid for a perfect button layout */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px; /* Spacing between buttons */
+        }
+
+        .calculator button {
+            width: 100%;
+            height: 65px;
+            font-size: 1.5em;
+            font-weight: 400;
+            color: #fff;
+            cursor: pointer;
+            
+            /* Button glassmorphism effect */
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Smooth transition for clicks and hovers */
+            transition: all 0.15s ease-out;
+        }
+
+        .calculator button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px); /* Subtle lift effect on hover */
+        }
+
+        /* The "push down" animation on click */
+        .calculator button:active {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Special styling for operator buttons */
+        .calculator button.operator {
+            background: rgba(255, 165, 0, 0.4);
+        }
+        
+        .calculator button.operator:hover {
+            background: rgba(255, 165, 0, 0.6);
+        }
+        
+        /* Special styling for the equals button */
+        .calculator button.equals {
+            grid-column: span 2; /* Make the equals button twice as wide */
+            background: rgba(0, 221, 255, 0.5);
+        }
+        
+        .calculator button.equals:hover {
+            background: rgba(0, 221, 255, 0.7);
+        }
+        
+        /* Special styling for the clear button */
+        .calculator button.clear {
+            background: rgba(255, 69, 58, 0.4);
+        }
+        
+        .calculator button.clear:hover {
+            background: rgba(255, 69, 58, 0.6);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="calculator-display"></div>
+        <div class="calculator-buttons">
+            <!-- Row 1 -->
+            <button class="clear">C</button>
+            <button class="operator">/</button>
+            <button class="operator">*</button>
+            <button class="operator">-</button>
+            
+            <!-- Row 2 -->
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="operator">+</button>
+            
+            <!-- Row 3 -->
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            
+            <!-- Row 4 -->
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button class="equals">=</button>
+            
+            <!-- Row 5 -->
+            <button class="zero">0</button>
+            <button>.</button>
+        </div>
+    </div>
+
+    <script>
+        // Wait for the entire page to load before running the script
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Get references to the display screen and all the buttons
+            const display = document.querySelector('.calculator-display');
+            const buttons = document.querySelectorAll('.calculator-buttons button');
+
+            // Add a click event listener to every button
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const buttonValue = button.textContent;
+                    handleInput(buttonValue);
+                });
+            });
+
+            /**
+             * Handles the logic for each button press.
+             * @param {string} value The text content of the button that was clicked.
+             */
+            function handleInput(value) {
+                switch (value) {
+                    case 'C':
+                        // If 'C' is clicked, clear the display
+                        display.textContent = '';
+                        break;
+                    
+                    case '=':
+                        // If '=' is clicked, try to evaluate the expression
+                        // We check if the display is not empty before calculating
+                        if (display.textContent) {
+                            try {
+                                // The eval() function evaluates JavaScript code represented as a string.
+                                // It is safe here because we only evaluate input from our own buttons.
+                                const result = eval(display.textContent.replace(/[^-()\d/*+.]/g, ''));
+                                display.textContent = result;
+                            } catch (error) {
+                                // If there's an error in the expression (e.g., "5++2"), display 'Error'
+                                display.textContent = 'Error';
+                            }
+                        }
+                        break;
+                    
+                    default:
+                        // For any other button, append its value to the display
+                        if (display.textContent === 'Error') {
+                            display.textContent = value;
+                        } else {
+                            display.textContent += value;
+                        }
+                        break;
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
